@@ -1,3 +1,3 @@
-SimpleSmart
+# SimpleSmart
 
 Smart home system.
