@@ -14,27 +14,25 @@ import (
 	"github.com/micro/go-micro"
 )
 
-// VentService structure used to store channel for stop signal
-type VentService struct {
+// VentServiceImpl structure used to store channel for stop signal
+type VentServiceImpl struct {
 	State            bool
 	LastTurnOnTime   time.Time
 	LastWorkDuration time.Duration
 }
 
-var ventServiceState = VentService{State: false}
+var ventServiceState = VentServiceImpl{State: false}
 
 // TurnOff will turn off channel vent regardless of sensor values
-func (state *VentService) TurnOff(context.Context, *ventService.TurnOffMsg, *ventService.TurnOffResponse) error {
+func (state *VentServiceImpl) TurnOff(context.Context, *ventService.TurnOffMsg, *ventService.TurnOffResponse) error {
 	return state.off()
 }
 
-func (state *VentService) off() error {
-	if state.State == false {
-		return nil
+func (state *VentServiceImpl) off() error {
+	if state.State != false {
+		state.State = false
+		state.LastWorkDuration = time.Since(state.LastTurnOnTime)
 	}
-
-	state.State = false
-	state.LastWorkDuration = time.Since(state.LastTurnOnTime)
 
 	if !mqttClient.IsConnectionOpen() {
 		return errors.New("MQTT connection lost")
@@ -52,17 +50,15 @@ func (state *VentService) off() error {
 }
 
 // TurnOn will turn on channel vent regardless of sensor values
-func (state *VentService) TurnOn(context.Context, *ventService.TurnOnMsg, *ventService.TurnOnResponse) error {
+func (state *VentServiceImpl) TurnOn(context.Context, *ventService.TurnOnMsg, *ventService.TurnOnResponse) error {
 	return state.on()
 }
 
-func (state *VentService) on() error {
-	if state.State == true {
-		return nil
+func (state *VentServiceImpl) on() error {
+	if state.State != true {
+		state.State = true
+		state.LastTurnOnTime = time.Now()
 	}
-
-	state.State = true
-	state.LastTurnOnTime = time.Now()
 
 	if !mqttClient.IsConnectionOpen() {
 		return errors.New("MQTT connection lost")
@@ -80,7 +76,7 @@ func (state *VentService) on() error {
 }
 
 // ProcessSensorData will analyse received sensor data and manage channel vent state
-func (state *VentService) ProcessSensorData(humidity string) error {
+func (state *VentServiceImpl) ProcessSensorData(humidity string) error {
 	h, err := strconv.ParseFloat(strings.TrimSpace(humidity), 64)
 	if err != nil {
 		return err
