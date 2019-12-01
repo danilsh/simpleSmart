@@ -7,7 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	ventService "ventService/proto"
+
+	ventService "github.com/danilsh/simpleSmart/ventService/proto"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/micro/go-micro"
