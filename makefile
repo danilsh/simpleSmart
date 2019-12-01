@@ -1,5 +1,4 @@
 all: _ventService
 
-_venrService:
-	cd venrService
-	make
+_ventService:
+	$(MAKE) -C ventService
