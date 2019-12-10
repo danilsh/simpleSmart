@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	ventService "github.com/danilsh/simpleSmart/ventService/proto"
+	ventService_RPC "ventService/proto"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/micro/go-micro"
@@ -24,7 +24,7 @@ type VentServiceImpl struct {
 var ventServiceState = VentServiceImpl{State: false}
 
 // TurnOff will turn off channel vent regardless of sensor values
-func (state *VentServiceImpl) TurnOff(context.Context, *ventService.TurnOffMsg, *ventService.TurnOffResponse) error {
+func (state *VentServiceImpl) TurnOff(context.Context, *ventService_RPC.TurnOffMsg, *ventService_RPC.TurnOffResponse) error {
 	return state.off()
 }
 
@@ -50,7 +50,7 @@ func (state *VentServiceImpl) off() error {
 }
 
 // TurnOn will turn on channel vent regardless of sensor values
-func (state *VentServiceImpl) TurnOn(context.Context, *ventService.TurnOnMsg, *ventService.TurnOnResponse) error {
+func (state *VentServiceImpl) TurnOn(context.Context, *ventService_RPC.TurnOnMsg, *ventService_RPC.TurnOnResponse) error {
 	return state.on()
 }
 
@@ -99,7 +99,7 @@ var mqttClient mqtt.Client
 func setupMqtt() bool {
 	options := mqtt.NewClientOptions()
 	// TODO: MQTT broker discovery
-	options.AddBroker("192.168.1.22:1883")
+	options.AddBroker("192.168.1.187:1883")
 	options.OnConnectionLost = func(client mqtt.Client, err error) {
 		fmt.Println("MQTT connection lost")
 	}
@@ -147,7 +147,7 @@ func main() {
 	srv := micro.NewService(micro.Name("ventService"))
 	srv.Init()
 
-	ventService.RegisterVentServiceHandler(srv.Server(), &ventServiceState)
+	ventService_RPC.RegisterVentService_RPCHandler(srv.Server(), &ventServiceState)
 
 	srv.Run()
 }

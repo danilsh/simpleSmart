@@ -1,9 +1,9 @@
 // ventService/proto/ventService.proto
 syntax = "proto3";
 
-package ventService; 
+package ventService_RPC; 
 
-service VentService {
+service VentService_RPC {
   rpc TurnOff(TurnOffMsg) returns (TurnOffResponse) {}
   rpc TurnOn(TurnOnMsg) returns (TurnOnResponse) {}
 }
