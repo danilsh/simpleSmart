@@ -13,8 +13,11 @@ jobs:
         go-version: 1.13
       id: go
       
-    - name: Set up protoc and plugins
+    - name: Set up protoc
       uses: arduino/setup-protoc@v1.1.0
+      
+    - name: Set up protoc go plugins
+      run: go get github.com/micro/protoc-gen-micro; go get github.com/protobuf/protoc-gen-go
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
