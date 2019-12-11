@@ -1,10 +1,16 @@
 all: ventservice
 
-ventservice: ../../../../../bin/ventService
+result = ./bin/ventService
+rpc_interface = ./proto/ventService.pb.go proto/ventService.pb.micro.go
+proto = ./proto/ventService.proto
+source = main.go
 
-../../../../../bin/ventService : main.go proto/ventService.pb.micro.go
-	go build -o ../../../../../bin/ventService main.go
+ventservice: $(result)
 
-proto/ventService.pb.micro.go proto/ventService.pb.go : proto/ventService.proto
-	protoc -I. --micro_out=. --go_out=. proto/ventService.proto
+$(result) : $(source) $(rpc_interface)
+	go mod tidy
+	go build -o $(result) $(source)
+
+$(rpc_interface) : $(proto)
+	protoc -I. --micro_out=. --go_out=. $(proto)
 
