@@ -3,7 +3,7 @@ all: ventservice
 result = ./bin/ventService
 rpc_interface = ./proto/ventService.pb.go proto/ventService.pb.micro.go
 proto = ./proto/ventService.proto
-source = main.go
+source = main.go init.go ventServiceImpl.go dataAquisition.go
 
 ventservice: $(result)
 
