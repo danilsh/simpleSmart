@@ -35,9 +35,6 @@ func setupMqtt() bool {
 					fmt.Println("*C")
 				case "ROOT/Sensors/DHT11_1/Humidity":
 					fmt.Println("%")
-					if err := ventServiceState.ProcessSensorData(string(message.Payload())); err != nil {
-						fmt.Println(err.Error())
-					}
 				case "ROOT/Sensors/DHT11_1/VCC":
 					fmt.Println("V")
 				}
@@ -59,5 +56,10 @@ func initTimers() {
 	go wetTimerControl()
 	dryTimer = time.NewTimer(sensorTimeout)
 	go dryTimerControl()
+}
+
+func initCalc() {
+	calcTick = time.NewTicker(calcTimeout)
+	go calcLoop()
 }
 

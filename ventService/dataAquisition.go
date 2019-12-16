@@ -19,11 +19,6 @@ import (
 // таймер. Если какой-то из таймеров достигнет тайм-аута, то будем считать все датчики соответствующей
 // группы "мёртвыми". Это состояние группы так же сохраняется. Оно будет сброшено, как только
 // в соответствующей группе будет получено хотя бы одно значение.
-//
-// Если нет информации ни от одного датчика из "влажного" помещения ("мёртвая" группа),
-// то вентилятор держится в выключенном состоянии.
-// Если недоступны данные из "сухих" помещений, то решение о выключении вентилятора
-// принимается не по разнице влажностей, а по динамике изменения влажности во влажном помещении
 
 type DHTSensorData struct {
 	Temperature float64
@@ -31,11 +26,14 @@ type DHTSensorData struct {
 	VCC float64
 }
 
-var wetSensors = [2]DHTSensorData{}
-var drySensors = [2]DHTSensorData{}
+// TODO: как вариант, можно переделать систему передачи информации от модуля регистрации в расчётный
+// модуль. Информацию можно передавать через каналы. Но сейчас это не совсем удобно, т.к. нужно выбирать
+// максимальные-минимальные сигналы от датчиков и т.п.
+var wetSensors = make([]DHTSensorData, 2)
+var drySensors = make([]DHTSensorData, 2)
 var wetSensorsAlive bool = false
 var drySensorsAlive bool = false
-const sensorTimeout = time.Second * 90;
+const sensorTimeout = time.Second * 90
 var wetTimer *time.Timer
 var dryTimer *time.Timer
 
@@ -43,6 +41,7 @@ func registerData(topic string, message string) {
 	value, err := strconv.ParseFloat(strings.TrimSpace(message), 64)
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	// TODO: Нужно с этим ужасом что-то делать.
 	// А если датчиков будет сто? (не будет)

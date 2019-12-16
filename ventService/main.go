@@ -13,6 +13,7 @@ func main() {
 	defer mqttClient.Disconnect(0)
 	
 	initTimers()
+	initCalc()
 
 	srv := micro.NewService(micro.Name("ventService"))
 	srv.Init()

@@ -1,12 +1,14 @@
 package main
 
+// TODO: защита от частого включения-выключения должна быть реализована непостредственно
+// в схеме управления электродвигателем
+
 import (
 	"strconv"
 	"context"
 	"errors"
 	"fmt"
 	"time"
-	"strings"
 	
 	ventService_RPC "ventService/proto"
 )
@@ -72,21 +74,3 @@ func (state *VentServiceImpl) on() error {
 	return nil
 }
 
-// ProcessSensorData will analyse received sensor data and manage channel vent state
-func (state *VentServiceImpl) ProcessSensorData(humidity string) error {
-	h, err := strconv.ParseFloat(strings.TrimSpace(humidity), 64)
-	if err != nil {
-		return err
-	}
-
-	// Для того, чтобы вентилятор не включался/выключался постоянно при дребезге сенсора
-	// относительно пороговой точки, реализуем гистерезис
-	if h > 66 {
-		return state.on()
-	}
-	if h < 64 {
-		return state.off()
-	}
-
-	return nil
-}
