@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 	"fmt"
+	"math"
 )
 
 // Алгоритм управляет работой канального вентилятора
@@ -25,9 +26,7 @@ import (
 // управляющими сигналами.
 // 
 // Также, могут возникнуть ситуации, когда не поступают сигналы от датчиков. Если "умерли" все датчики
-// сухих помещений, то алгоритм включает канальный вентилятор при достижении влажности во влажном помещении
-// в 66%, а выключает - при достижении влажности 64%. Имеется ввиду наибольшая влажность во всех влажных
-// помещениях.
+// сухих помещений, то в качестве условной влажности в сухих помещениях принимается 60%.
 //
 // Если "умерли" все датчики влажных помещений, то алгоритм выключает канальный вентилятор. При появлении
 // сигнала хотя бы от одного датчика во влажном помещении возобновляется обработка данных с основного
@@ -38,6 +37,9 @@ import (
 const calcTimeout = time.Second * 30
 var calcTick *time.Ticker
 var savedHumidity float64
+var savedTime time.Time
+var startSteadyHumidityControl = false
+var stopControl = false
 
 func calcLoop() {
 	for range calcTick.C {
@@ -47,30 +49,50 @@ func calcLoop() {
 }
 
 func doCalc() {
+	// Если мокрые датчики умерли - то вообще нечего контролировать
 	if !wetSensorsAlive {
 		ventServiceState.off()
 		return
 	}
+	// Контроль может быть остановлен на 30 минут, если влажность не менялась, не смотря на работу
+	// вентилятора в течение 30 минут
+	if stopControl && time.Since(savedTime) < time.Minute * 30 {
+		ventServiceState.off()
+	} else if stopControl {
+		// Время прекращения контроля закончилось
+		stopControl = false
+	}
 	
+	wet := maxHumidity(wetSensors)
+	dry := 60.0
 	if drySensorsAlive {
-		wet := maxHumidity(wetSensors)
-		dry := maxHumidity(drySensors)
-		
-		if wet - dry > 10 {
-			ventServiceState.on()
-		}
-		if wet - dry < 5 {
+		dry = maxHumidity(drySensors)
+	}
+
+	if wet - dry > 10 {
+		if !startSteadyHumidityControl {
+			// Начинаем контроль показания влажности - оно должно меняться
+			startSteadyHumidityControl = true
+			savedHumidity = wet
+			savedTime = time.Now()
+		} else if math.Abs(savedHumidity - wet) > 3.0 {
+			// Если влажность обновилась больше, чем на 3% - то обновим опорное значение
+			savedHumidity = wet
+			savedTime = time.Now()
+		} else if time.Since(savedTime) > time.Minute * 30 {
+			// Если с момента начала контроля в течение 30 минут значение не изменилось
+			// более, чем на 3%, то выключаем вентилятор и прекращаем контроль на другие 30 минут
+			startSteadyHumidityControl = false
+			stopControl = true
+			savedTime = time.Now()
 			ventServiceState.off()
+			return
 		}
-	} else {
-		wet := maxHumidity(wetSensors)
-		
-		if wet > 66 {
-			ventServiceState.on()
-		}
-		if wet < 64 {
-			ventServiceState.off()
-		}
+		ventServiceState.on()
+	}
+	if wet - dry < 5 {
+		startSteadyHumidityControl = false
+		ventServiceState.off()
 	}
 }
 
