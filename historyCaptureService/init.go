@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"strings"
 	"time"
 		
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -26,16 +25,17 @@ func setupMqtt() bool {
 		client.Subscribe("ROOT/Sensors/#", 0,
 			func(client mqtt.Client, message mqtt.Message) {
 				registerData(message.Topic(), string(message.Payload()));
-				log.Print(strings.TrimSpace(string(message.Payload())))
-				switch message.Topic() {
-				case "ROOT/Sensors/DHT11_1/Temperature":
-					log.Println("*C")
-				case "ROOT/Sensors/DHT11_1/Humidity":
-					log.Println("%")
-				case "ROOT/Sensors/DHT11_1/VCC":
-					log.Println("V")
-				}
+				//log.Print(strings.TrimSpace(string(message.Payload())))
+				//switch message.Topic() {
+				//case "ROOT/Sensors/DHT11_1/Temperature":
+				//	log.Println("*C")
+				//case "ROOT/Sensors/DHT11_1/Humidity":
+				//	log.Println("%")
+				//case "ROOT/Sensors/DHT11_1/VCC":
+				//	log.Println("V")
+				//}
 			})
+		log.Println("MQTT connected");
 	}
 	mqttClient = mqtt.NewClient(options)
 
@@ -58,6 +58,8 @@ func setupInflux() bool {
 		return false
 	}
 	influxDbClient = client
+	
+	log.Println("InfluxDB connected");
 	
 	return true
 }

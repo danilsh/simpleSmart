@@ -13,7 +13,7 @@ var mqttClient mqtt.Client
 func setupMqtt() bool {
 	options := mqtt.NewClientOptions()
 	// TODO: MQTT broker discovery
-	options.AddBroker("192.168.1.187:1883")
+	options.AddBroker("127.0.0.1:1883")
 	options.OnConnectionLost = func(client mqtt.Client, err error) {
 		fmt.Println("MQTT connection lost")
 	}

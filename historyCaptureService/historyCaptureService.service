@@ -1,0 +1,29 @@
+[Unit]
+Description=simpleSmart Home Sensor Measurement History Capture Service
+ConditionPathExists=/usr/bin/historyCaptureService
+After=network.target
+ 
+[Service]
+Type=simple
+User=historycaptureservice
+Group=historycaptureservice
+LimitNOFILE=1024
+
+Restart=on-failure
+RestartSec=10
+startLimitIntervalSec=60
+
+WorkingDirectory=/usr/bin/
+ExecStart=/usr/bin/historyCaptureService
+
+# make sure log directory exists and owned by syslog
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p /var/log/historycaptureservice
+ExecStartPre=/bin/chown root:adm /var/log/historycaptureservice
+ExecStartPre=/bin/chmod 755 /var/log/historycaptureservice
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=historyCaptureService
+ 
+[Install]
+WantedBy=multi-user.target
