@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"strings"
+	"log"
 	"time"
 		
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -15,10 +14,10 @@ func setupMqtt() bool {
 	// TODO: MQTT broker discovery
 	options.AddBroker("127.0.0.1:1883")
 	options.OnConnectionLost = func(client mqtt.Client, err error) {
-		fmt.Println("MQTT connection lost")
+		log.Println("MQTT connection lost")
 	}
 	options.OnReconnecting = func(clent mqtt.Client, opt *mqtt.ClientOptions) {
-		fmt.Println("MQTT reconnecting")
+		log.Println("MQTT reconnecting")
 	}
 	options.OnConnect = func(client mqtt.Client) {
 		client.Subscribe("ROOT/Sensors/#", 0,
@@ -29,22 +28,23 @@ func setupMqtt() bool {
 //				"ROOT/Sensors/DHT11_1/VCC":         0},
 			func(client mqtt.Client, message mqtt.Message) {
 				registerData(message.Topic(), string(message.Payload()));
-				fmt.Print(strings.TrimSpace(string(message.Payload())))
-				switch message.Topic() {
-				case "ROOT/Sensors/DHT11_1/Temperature":
-					fmt.Println("*C")
-				case "ROOT/Sensors/DHT11_1/Humidity":
-					fmt.Println("%")
-				case "ROOT/Sensors/DHT11_1/VCC":
-					fmt.Println("V")
-				}
+				//log.Print(strings.TrimSpace(string(message.Payload())))
+				//switch message.Topic() {
+				//case "ROOT/Sensors/DHT11_1/Temperature":
+				//	log.Println("*C")
+				//case "ROOT/Sensors/DHT11_1/Humidity":
+				//	log.Println("%")
+				//case "ROOT/Sensors/DHT11_1/VCC":
+				//	log.Println("V")
+				//}
 			})
+			log.Println("MQTT connected");
 	}
 	mqttClient = mqtt.NewClient(options)
 
 	if token := mqttClient.Connect(); token.Wait() && token.Error() != nil {
-		fmt.Println("Error connecting to mqtt server")
-		fmt.Println(token.Error())
+		log.Println("Error connecting to mqtt server")
+		log.Println(token.Error())
 		return false
 	}
 

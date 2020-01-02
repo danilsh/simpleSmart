@@ -2,7 +2,6 @@ package main
 
 import (
 	"time"
-	"fmt"
 	"math"
 )
 
@@ -43,7 +42,7 @@ var stopControl = false
 
 func calcLoop() {
 	for range calcTick.C {
-		fmt.Println("Calc Tick")
+		//log.Println("Calc Tick")
 		doCalc()
 	}
 }

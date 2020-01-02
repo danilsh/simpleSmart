@@ -3,7 +3,7 @@ package main
 import (
 	"strconv"
 	"strings"
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -40,7 +40,7 @@ var dryTimer *time.Timer
 func registerData(topic string, message string) {
 	value, err := strconv.ParseFloat(strings.TrimSpace(message), 64)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		return
 	}
 	// TODO: Нужно с этим ужасом что-то делать.
@@ -102,7 +102,7 @@ func wetTimerControl() {
 	for {
 		<-wetTimer.C
 		wetSensorsAlive = false
-		fmt.Println("Wet sensors dead")
+		log.Println("Wet sensors dead")
 		wetTimer.Reset(sensorTimeout)
 	}
 }
@@ -111,7 +111,7 @@ func dryTimerControl() {
 	for {
 		<-dryTimer.C
 		drySensorsAlive = false
-		fmt.Println("Dry sensors dead")
+		log.Println("Dry sensors dead")
 		dryTimer.Reset(sensorTimeout)
 	}
 }

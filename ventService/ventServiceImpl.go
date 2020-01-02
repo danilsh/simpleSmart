@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"context"
 	"errors"
-	"fmt"
 	"time"
 	
 	ventService_RPC "ventService/proto"
@@ -37,7 +36,7 @@ func (state *VentServiceImpl) off() error {
 		return errors.New("MQTT connection lost")
 	}
 
-	fmt.Println("Turn vent OFF")
+	//fmt.Println("Turn vent OFF")
 	if token := mqttClient.Publish("ROOT/Actuators/BathVentActuator/State", 0, false, strconv.FormatBool(state.State)); token.Wait() && token.Error() != nil {
 		return token.Error()
 	}
@@ -63,7 +62,7 @@ func (state *VentServiceImpl) on() error {
 		return errors.New("MQTT connection lost")
 	}
 
-	fmt.Println("Turn vent ON")
+	//fmt.Println("Turn vent ON")
 	if token := mqttClient.Publish("ROOT/Actuators/BathVentActuator/State", 0, false, strconv.FormatBool(state.State)); token.Wait() && token.Error() != nil {
 		return token.Error()
 	}
