@@ -1,38 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--
-   index.html
-   
-   Copyright 2020  <pi@raspberrypi>
-   
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-   MA 02110-1301, USA.
-   
-   
--->
 
 <head>
 <meta charset="utf-8" />
-<title>Simple.Smart.Home.</title>
+<title>Simple.Smart.Home</title>
 <meta name="generator" content="Geany 1.33" />
 <link rel="stylesheet" type="text/css" href="/styles.css" />
 </head>
 
 <body>
-   <h1>Simple.Smart.Home.</h1>
-   <iframe src="http://192.168.1.187:3000/d-solo/mp8nX-kRk/vannaia-2-i-etazh?orgId=1&panelId=2&refresh=30s" width="450" height="300" frameborder="0"></iframe>
+   <h1>Simple.Smart.Home</h1>
+   <table>
+      <tr>
+         <tc>
+            <iframe src="http://192.168.1.187:3000/d-solo/mp8nX-kRk/vannaia-2-i-etazh?orgId=1&panelId=2&refresh=30s" width="450" height="300" frameborder="0"></iframe>
+         </tc>
+         <tc>
+            <div id="vent_button_container_id"></div>
+         </tc>
+      </tr>
+   </table>
+
+   <!-- Загрузим React. -->
+   <!-- Примечание: для деплоя на продакшен замените окончание «development.js» на «production.min.js». -->
+   <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+   <!-- Загрузим наш React-компонент. -->
+   <script src="vent_button.js"></script>
 </body>
 
 </html>
