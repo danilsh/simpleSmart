@@ -20,11 +20,11 @@ func registerData(topic string, message string) {
 	// А если датчиков будет сто? (не будет)
 	// Некрасиво, кароч
 	switch topic {
-	case "ROOT/Sensors/DHT11_1/Temperature":
+	case "ROOT/Sensors/WetRooms/1/Temperature":
 		fields = map[string]interface{}{ "Temperature" : value }
-	case "ROOT/Sensors/DHT11_1/Humidity":
+	case "ROOT/Sensors/WetRooms/1/Humidity":
 		fields = map[string]interface{}{ "Humidity" : value }
-	case "ROOT/Sensors/DHT11_1/VCC":
+	case "ROOT/Sensors/WetRooms/1/VCC":
 		fields = map[string]interface{}{ "VCC" : value }
 	case "ROOT/Sensors/WetRooms/2/Temperature":
 		fields = map[string]interface{}{ "Temperature" : value }

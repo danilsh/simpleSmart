@@ -47,15 +47,15 @@ func registerData(topic string, message string) {
 	// А если датчиков будет сто? (не будет)
 	// Некрасиво, кароч
 	switch topic {
-	case "ROOT/Sensors/DHT11_1/Temperature":
+	case "ROOT/Sensors/WetRooms/1/Temperature":
 		wetSensors[0].Temperature = value
 		wetSensorsAlive = true
 		wetTimer.Reset(sensorTimeout)
-	case "ROOT/Sensors/DHT11_1/Humidity":
+	case "ROOT/Sensors/WetRooms/1/Humidity":
 		wetSensors[0].Humidity = value
 		wetSensorsAlive = true
 		wetTimer.Reset(sensorTimeout)
-	case "ROOT/Sensors/DHT11_1/VCC":
+	case "ROOT/Sensors/WetRooms/1/VCC":
 		wetSensors[0].VCC = value
 		wetSensorsAlive = true
 		wetTimer.Reset(sensorTimeout)
